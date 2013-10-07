@@ -23,25 +23,20 @@ $(function() {
 		setFireInterval();
 	});
 
-
-
-
 	var startFire = function(){
 		// console.log("fire")
-		$('.btn-default').off('click')
-		$('.btn-default').on('click', function(){
+		$('#land .btn').off('click')
+		$('#land .btn').on('click', function(){
 			($(this).hasClass("btn-info"))
 				? console.log("break")
 				: $(this).addClass("btn-warning").addClass("fireup")
 			
 		})
-
-
 	}
 	var preventFire = function(){
 		console.log("water")
-		$('.btn-default').off('click')
-		$('.btn-default').on('click', function(){
+		$('#land .btn').off('click')
+		$('#land .btn').on('click', function(){
 			($(this).hasClass("btn-warning") || $(this).hasClass("btn-danger")) 
 				? console.log("break")
 				: $(this).addClass("btn-info")
@@ -50,17 +45,28 @@ $(function() {
 
 	}
 	var setFireInterval = function(){
-		setTimeout(function(){
-			
-			$('.btn-default').hasClass('btn-warning')
+		setInterval(function(){
+			// ($('.fireup').hasClass("btn-info"))
+			// 	? console.log("break")
+			// 	: $('.fireup').addClass("btn-danger").removeClass('fireup')
+			$('#land .btn').hasClass('btn-warning')
 				? $('.btn-warning').addClass("btn-danger")
 				: console.log("no fire to spread")
 			spreadFire();
+			$('.btn-danger').hasClass('firenext')
+				? $('.btn-danger').removeClass('firenext')
+				: console.log("firenext not removed")
+			$('.btn-danger').hasClass('fireprev')
+				? $('.btn-danger').removeClass('fireprev')
+				: console.log("firenext not removed")
+			// if($('btn-default').hasClass('btn-danger')){
+			// 	$('btn-danger').removeClass('fireup');
+			// }
 		}, 1500);
 	}
 	var findIndexNext = function(){
 
-		var nextClassItem = $('.fireup').attr("data-index")
+		var nextClassItem = $('.firenext').attr("data-index") || $('.fireup').attr("data-index")
 		console.log("firestring", typeof(nextClassItem), nextClassItem)
 		nextClassItem = Number(nextClassItem)
 		console.log("firenumber", typeof(nextClassItem), nextClassItem)
@@ -71,7 +77,7 @@ $(function() {
 		return nextNeighbor;
 	}
 	var findIndexPast = function(){
-		var pastClassItem = $('.fireup').attr("data-index")
+		var pastClassItem = $('.fireprev').attr("data-index") || $('.fireup').attr("data-index")
 		console.log("firestring", typeof(pastClassItem), pastClassItem)
 		pastClassItem = Number(pastClassItem)
 		console.log("firenumber", typeof(pastClassItem), pastClassItem)
@@ -82,19 +88,21 @@ $(function() {
 
 	var spreadFire = function(){
 		
-
-
-		var pastIndex = findIndexPast();
-		var pastIndexString = pastIndex.toString();
+		
 		console.log("pastIndexstring", typeof(pastIndexString), pastIndexString)
 		var nextIndex = findIndexNext();
 		var nextIndexString = nextIndex.toString();
-	
+		var pastIndex = findIndexPast();
+		var pastIndexString = pastIndex.toString();
 
-		$('[data-index='+ pastIndexString +']').addClass('btn-warning').addClass('.fireup')
-			console.log("came this far")
-			
-		$('[data-index='+ nextIndexString +']').addClass('btn-warning').addClass('.fireup')
+		if (pastIndex>1 && (!$('[data-index='+ pastIndexString +']').hasClass('btn-info'))){
+			$('[data-index='+ pastIndexString +']').addClass('btn-warning').addClass('fireprev')
+			console.log("backpedalled this far")
+		}
+		if(nextIndex<83 && (!$('[data-index='+ nextIndexString +']').hasClass('btn-info'))){
+			$('[data-index='+ nextIndexString +']').addClass('btn-warning').addClass('firenext')
+			console.log("pushed this far")
+		}
 	}
 
 
